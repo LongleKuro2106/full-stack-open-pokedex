@@ -56,18 +56,18 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
-      - name: Notify Success
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '#skip') }}
+      - name: Test Success
         uses: rjstone/discord-webhook-notify@v1
-        if: success()
+        if: success() && github.ref == 'refs/heads/main'
         with:
           severity: info
-          details: A new version of pokedex deployed
+          details: "Deployment Succeeded! Version deployed: ${{ github.sha }}"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Notify Failure
+      - name: Test Failure
         uses: rjstone/discord-webhook-notify@v1
-        if: failure()
+        if: failure() && github.ref == 'refs/heads/main'
         with:
           severity: error
-          details: commit by ${{ github.actor }} broke the build :(
+          details: "Deployment Failed! Commit: ${{ github.sha }} by ${{ github.actor }}. Message: ${{ github.event.head_commit.message }}"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
