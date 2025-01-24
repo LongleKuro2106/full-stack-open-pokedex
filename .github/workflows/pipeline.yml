@@ -62,12 +62,12 @@ jobs:
         if: success() && github.ref == 'refs/heads/main'
         with:
           severity: info
-          details: "Deployment Succeeded! Version deployed: ${{ github.sha }}"
+          details: "A new version of Pokedex deployed"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Test Failure
         uses: rjstone/discord-webhook-notify@v1
         if: failure() && github.ref == 'refs/heads/main'
         with:
           severity: error
-          details: "Deployment Failed! Commit: ${{ github.sha }} by ${{ github.actor }}. Message: ${{ github.event.head_commit.message }}"
+          details: commit by ${{ github.actor }} broke the build
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
