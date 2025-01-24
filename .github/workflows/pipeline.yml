@@ -58,16 +58,20 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '#skip') }}
       - name: Test Success
-        uses: rjstone/discord-webhook-notify@v1
+        uses: tsickert/discord-webhook@v6.0.0
         if: success() && github.ref == 'refs/heads/main'
         with:
-          severity: info
-          details: "A new version of Pokedex deployed"
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "A new version of Pokedex deployed"
+          username: "Deployment Bot"
+          embed-title: "Deployment Success"
+          embed-description: "A new version of Pokedex has been successfully deployed."
       - name: Test Failure
-        uses: rjstone/discord-webhook-notify@v1
+        uses: tsickert/discord-webhook@v6.0.0
         if: failure() && github.ref == 'refs/heads/main'
         with:
-          severity: error
-          details: commit by ${{ github.actor }} broke the build
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "Build Failure Detected"
+          username: "Deployment Bot"
+          embed-title: "Deployment Failure"
+          embed-description: "Commit by ${{ github.actor }} broke the build."
