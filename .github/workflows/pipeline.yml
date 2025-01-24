@@ -37,8 +37,6 @@ jobs:
           severity: info
           details: "A new version of Pokedex deployed."
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-        env:
-          DEBUG: true
       - name: Test Failure
         uses: rjstone/discord-webhook-notify@v1.0.0
         if: ${{ failure() }}
@@ -46,8 +44,6 @@ jobs:
           severity: error
           details: "Build failed."
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-        env:
-          DEBUG: true
 
   tag_release:
     needs: [simple_deployment_pipeline]
