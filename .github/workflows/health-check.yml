@@ -1,0 +1,49 @@
+name: Periodic Health Check
+
+on:
+  # Initially, trigger the workflow on push to test it
+  push:
+    branches:
+      - main
+
+  # Once tested, switch to a scheduled trigger
+  schedule:
+    - cron: "0 0 * * *" # This runs the check daily at midnight UTC
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check URL Health
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: "https://full-stack-open-pokedex-billowing-grass-6846.fly.dev/health"
+          follow-redirect: false # Optional, defaults to "false"
+          # Fail this action after this many failed attempts
+          max-attempts: 3 # Optional, defaults to 1
+          # Delay between retries
+          retry-delay: 5s # Optional, only applicable to max-attempts > 1
+          # Retry all errors, including 404. This option might trigger curl upgrade.
+          retry-all: false # Optional, defaults to "false"
+          # String representation of
+
+      - name: Test Success
+        uses: tsickert/discord-webhook@v6.0.0
+        if: success()
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "Health Check Passed"
+          username: "Health Check Bot"
+          embed-title: "Health Check Success"
+          embed-description: "The health check for your application passed successfully."
+
+      - name: Test Failure
+        uses: tsickert/discord-webhook@v6.0.0
+        if: failure()
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "Health Check Failed"
+          username: "Health Check Bot"
+          embed-title: "Health Check Failure"
+          embed-description: "The health check for your application failed."
