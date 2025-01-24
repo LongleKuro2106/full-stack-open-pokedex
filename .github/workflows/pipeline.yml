@@ -30,20 +30,6 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
-      - name: Test Success
-        uses: rjstone/discord-webhook-notify@v1.0.0
-        if: ${{ success() }}
-        with:
-          severity: info
-          details: "A new version of Pokedex deployed."
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Failure
-        uses: rjstone/discord-webhook-notify@v1.0.0
-        if: ${{ failure() }}
-        with:
-          severity: error
-          details: "Build failed."
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
