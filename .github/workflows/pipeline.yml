@@ -62,12 +62,12 @@ jobs:
         if: success()
         with:
           severity: info
-          details: "A new version of pokedex deployed"
+          details: A new version of pokedex deployed
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Notify Failure
         uses: rjstone/discord-webhook-notify@v1
         if: failure()
         with:
           severity: error
-          details: "Commit: ${{ github.sha }} by ${{ github.actor }} broke the build :("
+          details: commit ${{ github.sha }} by ${{ github.actor }} broke the build :(
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
